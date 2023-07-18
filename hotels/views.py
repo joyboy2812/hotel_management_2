@@ -1,18 +1,18 @@
 from django.shortcuts import render, redirect
 from .models import Hotel
 from .forms import HotelForm
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # Create your views here.
 
-def home(request):
-    role = 'admin'
-    context = {
-        'role': role,
-    }
-    return render(request, 'hotels/home.html', context)
+
+def has_admin_role(user):
+    return user.profile.role.role_name == 'admin'
 
 
+@login_required(login_url='login')
+@user_passes_test(has_admin_role, login_url='login')
 def manageHotel(request):
     hotels = Hotel.objects.all()
     role = 'admin'
@@ -23,6 +23,8 @@ def manageHotel(request):
     return render(request, 'hotels/manage_hotel.html', context)
 
 
+@login_required(login_url='login')
+@user_passes_test(has_admin_role, login_url='login')
 def createHotel(request):
     form = HotelForm()
     role = 'admin'
@@ -41,6 +43,8 @@ def createHotel(request):
     return render(request, 'hotels/hotel_form.html', context)
 
 
+@login_required(login_url='login')
+@user_passes_test(has_admin_role, login_url='login')
 def updateHotel(request, pk):
     hotel = Hotel.objects.get(id=pk)
     form = HotelForm(instance=hotel)
@@ -60,6 +64,8 @@ def updateHotel(request, pk):
     return render(request, 'hotels/hotel_form.html', context)
 
 
+@login_required(login_url='login')
+@user_passes_test(has_admin_role, login_url='login')
 def deleteHotel(request, pk):
     hotel = Hotel.objects.get(id=pk)
     role = 'admin'

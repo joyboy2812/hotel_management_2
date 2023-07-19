@@ -13,7 +13,7 @@ def has_admin_role(user):
 
 @login_required(login_url='login')
 @user_passes_test(has_admin_role, login_url='login')
-def manageHotel(request):
+def manage_hotel(request):
     hotels = Hotel.objects.all()
     role = 'admin'
     context = {
@@ -25,7 +25,7 @@ def manageHotel(request):
 
 @login_required(login_url='login')
 @user_passes_test(has_admin_role, login_url='login')
-def createHotel(request):
+def create_hotel(request):
     form = HotelForm()
     role = 'admin'
 
@@ -45,7 +45,7 @@ def createHotel(request):
 
 @login_required(login_url='login')
 @user_passes_test(has_admin_role, login_url='login')
-def updateHotel(request, pk):
+def update_hotel(request, pk):
     hotel = Hotel.objects.get(id=pk)
     form = HotelForm(instance=hotel)
     role = 'admin'
@@ -66,7 +66,7 @@ def updateHotel(request, pk):
 
 @login_required(login_url='login')
 @user_passes_test(has_admin_role, login_url='login')
-def deleteHotel(request, pk):
+def delete_hotel(request, pk):
     hotel = Hotel.objects.get(id=pk)
     role = 'admin'
 

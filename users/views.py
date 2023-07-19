@@ -70,7 +70,7 @@ def login_user(request):
     return render(request, 'users/login_register.html', context)
 
 
-def activateEmail(request, user, to_email):
+def activate_email(request, user, to_email):
     mail_subject = "Activate your user account"
     message = render_to_string("template_activate_account.html", {
         'user': user.username,
@@ -96,12 +96,17 @@ def register_user(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.username = user.username.lower()
-            user.save()
-            activateEmail(request, user, form.cleaned_data.get('email'))
-            return redirect('home')
+            email = form.cleaned_data['email']
+            existing_user = User.objects.filter(email=email).exists()
+            if existing_user:
+                messages.error(request, 'This email is already in use. Please use a different email.')
+            else:
+                user = form.save(commit=False)
+                user.is_active = False
+                user.username = user.username.lower()
+                user.save()
+                activate_email(request, user, form.cleaned_data.get('email'))
+                return redirect('home')
         else:
             messages.error(request, 'An error has occurred during registration!')
     context = {

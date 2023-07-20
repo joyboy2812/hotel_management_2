@@ -11,15 +11,26 @@
     <nav>
       <h1>My Hotel</h1>
       <ul>
-        <li><a href="{% url 'home-page' %}">Trang chủ</a></li>
-        {% if role == 'admin' %}
+        <li><a href="{% url 'home' %}">Trang chủ</a></li>
+        {% if request.user.profile.role.role_name == 'admin' %}
          <li><a href="{% url 'manage-hotel' %}">Quản lý khách sạn</a></li>
          <li><a href="#">Quản lý phòng</a></li>
          <li><a href="#">Quản lý người dùng</a></li>
         {% endif %}
-        <li><a href="#">Đăng xuất</a></li>
+        {% if request.user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">Đăng xuất</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Login/Sign Up</a></li>
+        {% endif %}
       </ul>
     </nav>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
   </header>
 
   <section class="content">
